@@ -3,6 +3,14 @@ const mongoose = require('mongoose')
 const app = express()
 const blogPost = require('./schemas/blogPost')
 const bodyParser = require('body-Parser')
+const mustacheExpress = require('mustache-express')
+
+
+app.engine('mustache',mustacheExpress())
+
+app.set('views','./views')
+app.set('view engine','mustache')
+
 
 //allows us to parse json elements
 app.use(bodyParser.json())
@@ -23,18 +31,20 @@ app.get('/blogList/:blogPostId', function(req,res) {
   let blogPostId = req.params.blogPostId
 
   blogPost.findById(blogPostId,function(error,blogPost) {
-    res.json(blogPost)
+    res.json('blogPost')
   })
 
 })
 
 app.get('/', function(req,res) {
-  res.send("Hello World!")
+  res.render('blogPosts')
 })
 
+
+
 app.get('/blogList', function(req,res) {
-  blogPost.find(function(error,blogPosts) {
-    res.json(blogPosts)
+  blogPost.find(function(error,blogPost) {
+    res.json(blogPost)
   })
 })
 
@@ -54,6 +64,7 @@ app.post('/blogList', function(req,res) {
     }
     console.log(blogPost)
   })
+  res.json(blogPost)
 })
 
 //updating a post
